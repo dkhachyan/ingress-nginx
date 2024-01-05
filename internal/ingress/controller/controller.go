@@ -184,8 +184,6 @@ func (n *NGINXController) syncIngress(interface{}) error {
 		return nil
 	}
 
-	n.metricCollector.SetHosts(hosts)
-
 	if !utilingress.IsDynamicConfigurationEnough(pcfg, n.runningConfig) {
 		klog.InfoS("Configuration changes detected, backend reload required")
 
@@ -248,6 +246,8 @@ func (n *NGINXController) syncIngress(interface{}) error {
 		klog.Errorf("Unexpected failure reconfiguring NGINX:\n%v", err)
 		return err
 	}
+
+	n.metricCollector.SetHosts(hosts)
 
 	ri := utilingress.GetRemovedIngresses(n.runningConfig, pcfg)
 	re := utilingress.GetRemovedHosts(n.runningConfig, pcfg)
